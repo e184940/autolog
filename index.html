@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#111827" />
+    <title>AutoLog — serviceloggen din</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark">A</span><span>AutoLog</span></div>
+        <button class="icon-button" id="moreButton" aria-label="Flere valg">•••</button>
+      </header>
+
+      <section class="vehicle-card" aria-label="Valgt bil">
+        <div class="vehicle-copy">
+          <p class="eyebrow">MIN BIL</p>
+          <h1 id="vehicleName">Volvo V60</h1>
+          <p id="vehicleMeta">2019 · AB 12345</p>
+        </div>
+        <button class="car-illustration" id="editVehicle" aria-label="Endre bilinformasjon">🚙</button>
+      </section>
+
+      <section class="summary" aria-label="Oversikt">
+        <article><span class="summary-number" id="entryCount">0</span><span>registreringer</span></article>
+        <article><span class="summary-number" id="latestDate">—</span><span>siste service</span></article>
+      </section>
+
+      <section class="decoder" aria-labelledby="decoderTitle">
+        <div class="decoder-heading"><div><p class="eyebrow">OBD-II</p><h2 id="decoderTitle">Feilkodehjelp</h2></div><span class="decoder-badge">DTC</span></div>
+        <p class="decoder-intro">Lim inn en feilkode fra OBD-leseren, så får du en enkel forklaring og forslag til neste steg.</p>
+        <div class="decoder-form"><input id="dtcInput" aria-label="OBD feilkode" inputmode="text" autocapitalize="characters" maxlength="5" placeholder="For eksempel P0420" /><button id="decodeButton">Forklar kode</button></div>
+        <p class="input-hint">Støtter generiske P-, B-, C- og U-koder. Merke-spesifikke koder kan variere.</p>
+        <div class="decode-result hidden" id="decodeResult" aria-live="polite"></div>
+      </section>
+
+      <section class="log-section">
+        <div class="section-heading">
+          <div><p class="eyebrow">HISTORIKK</p><h2>Bilens loggbok</h2></div>
+          <button class="filter-button" id="filterButton">Filter</button>
+        </div>
+        <div class="filter-row hidden" id="filterRow">
+          <button class="chip active" data-filter="all">Alle</button>
+          <button class="chip" data-filter="service">Service</button>
+          <button class="chip" data-filter="repair">Reparasjon</button>
+          <button class="chip" data-filter="tire">Dekk</button>
+          <button class="chip" data-filter="other">Annet</button>
+        </div>
+        <div class="entries" id="entries"></div>
+        <div class="empty-state hidden" id="emptyState">
+          <span>✦</span>
+          <h3>Ingen treff</h3>
+          <p>Prøv et annet filter, eller legg til en ny registrering.</p>
+        </div>
+      </section>
+    </main>
+
+    <button class="add-button" id="addButton"><span>＋</span> Legg til</button>
+
+    <dialog id="entryDialog">
+      <form method="dialog" id="entryForm">
+        <div class="dialog-heading"><div><p class="eyebrow">NY REGISTRERING</p><h2>Hva gjorde du?</h2></div><button value="cancel" class="close" aria-label="Lukk">×</button></div>
+        <label>Type
+          <select name="type" required>
+            <option value="service">Service</option><option value="repair">Reparasjon</option><option value="tire">Dekk</option><option value="other">Annet</option>
+          </select>
+        </label>
+        <label>Hva ble gjort?<input name="title" placeholder="F.eks. Olje og oljefilter" required maxlength="80" /></label>
+        <div class="form-grid"><label>Dato<input type="date" name="date" required /></label><label>Kilometerstand<input type="number" name="mileage" placeholder="82 500" min="0" /></label></div>
+        <label>Hvor?<input name="place" placeholder="F.eks. Møller Bil" maxlength="80" /></label>
+        <label>Kostnad (kr)<input type="number" name="cost" placeholder="0" min="0" /></label>
+        <label>Notat <span class="optional">valgfritt</span><textarea name="note" placeholder="Deler, garanti eller noe du vil huske"></textarea></label>
+        <button class="save-button" value="default">Lagre registrering</button>
+      </form>
+    </dialog>
+
+    <dialog id="vehicleDialog">
+      <form method="dialog" id="vehicleForm">
+        <div class="dialog-heading"><div><p class="eyebrow">BIL</p><h2>Endre bil</h2></div><button value="cancel" class="close" aria-label="Lukk">×</button></div>
+        <label>Bilmodell<input name="name" required /></label>
+        <label>År og registreringsnummer<input name="meta" required /></label>
+        <button class="save-button" value="default">Lagre bil</button>
+      </form>
+    </dialog>
+    <script src="app.js"></script>
+  </body>
+</html>
