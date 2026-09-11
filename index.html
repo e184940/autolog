@@ -4,55 +4,58 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#111827" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>AutoLog — serviceloggen din</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icon.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="app-shell">
       <header class="topbar">
         <div class="brand"><span class="brand-mark">A</span><span>AutoLog</span></div>
-        <div class="topbar-actions"><select id="languageSelect" aria-label="Velg språk"><option value="nb">NO</option><option value="en">EN</option></select><button class="icon-button" id="moreButton" aria-label="Flere valg">•••</button></div>
+        <div class="topbar-actions"><button class="icon-button customize-home" id="customizeHome" data-i18n-aria="customizeHome" data-i18n-title="customizeHome" aria-label="Tilpass hjemskjerm" title="Tilpass hjemskjerm">▦</button><button class="icon-button" id="moreButton" data-i18n-aria="moreOptions" aria-label="Flere valg">•••</button></div>
       </header>
 
-      <section class="vehicle-card" aria-label="Valgt bil">
+      <div id="homePage">
+      <section class="vehicle-card" data-i18n-aria="selectedVehicle" aria-label="Valgt bil">
         <div class="vehicle-copy">
           <p class="eyebrow" data-i18n="myVehicle">MIN BIL</p>
           <h1 id="vehicleName">Volvo V60</h1>
           <p id="vehicleMeta">2019 · AB 12345</p>
         </div>
-        <button class="car-illustration" id="editVehicle" aria-label="Endre bilinformasjon">🚙</button>
+        <button class="car-illustration" id="editVehicle" data-i18n-aria="editVehicleInfo" aria-label="Endre bilinformasjon">🚙</button>
       </section>
 
-      <section class="summary" aria-label="Oversikt">
+      <section class="summary" data-i18n-aria="overview" aria-label="Oversikt">
         <article><span class="summary-number" id="entryCount">0</span><span data-i18n="entries">registreringer</span></article>
         <article><span class="summary-number" id="latestDate">—</span><span data-i18n="latestService">siste service</span></article>
       </section>
 
-      <section class="fleet-panel hidden menu-panel" id="fleetPanel" aria-label="Bilpark">
-        <div class="section-heading"><div><p class="eyebrow" data-fleet-i18n="fleet">BILPARK</p><h2 data-fleet-i18n="myVehicles">Mine biler</h2></div><button class="fleet-add" id="addVehicleButton" type="button">＋ <span data-fleet-i18n="addVehicle">Legg til bil</span></button></div>
-        <button class="remove-vehicle" id="removeVehicleButton" type="button">Slett aktiv bil</button>
-        <div class="fleet-summary"><article><strong id="fleetVehicleCount">0</strong><span data-fleet-i18n="vehicles">biler</span></article><article><strong id="fleetEntryCount">0</strong><span data-i18n="entries">registreringer</span></article><article><strong id="fleetCost">0 kr</strong><span data-fleet-i18n="totalCost">totale kostnader</span></article></div>
-        <div class="fleet-list" id="fleetList"></div>
+      <section class="reminder-panel home-widget" data-widget="reminders" aria-labelledby="reminderTitle">
+        <div class="section-heading"><div><p class="eyebrow" data-i18n="maintenance">VEDLIKEHOLD</p><h2 id="reminderTitle" data-i18n="remindersTitle">Kommende påminnelser</h2></div><button class="filter-button" id="editReminders" type="button" data-i18n="edit">Endre</button></div>
+        <div class="reminder-list" id="reminderList"></div>
       </section>
 
-      <section class="decoder hidden menu-panel" id="decoderPanel" aria-labelledby="decoderTitle">
+      <section class="decoder home-widget" id="decoderPanel" data-widget="obd" aria-labelledby="decoderTitle">
         <div class="decoder-heading"><div><p class="eyebrow">OBD-II</p><h2 id="decoderTitle" data-i18n="decoderTitle">Feilkodehjelp</h2></div><span class="decoder-badge">DTC</span></div>
         <p class="decoder-intro" data-i18n="decoderIntro">Lim inn en feilkode fra OBD-leseren, så får du en enkel forklaring og forslag til neste steg.</p>
-        <div class="decoder-form"><input id="dtcInput" aria-label="OBD feilkode" inputmode="text" autocapitalize="characters" maxlength="5" placeholder="For eksempel P0420" data-i18n-placeholder="dtcPlaceholder" /><button id="decodeButton" data-i18n="decodeButton">Forklar kode</button></div>
+        <div class="decoder-form"><input id="dtcInput" data-i18n-aria="obdInput" aria-label="OBD-feilkode" inputmode="text" autocapitalize="characters" maxlength="5" placeholder="For eksempel P0420" data-i18n-placeholder="dtcPlaceholder" /><button id="decodeButton" data-i18n="decodeButton">Forklar kode</button></div>
         <p class="input-hint" data-i18n="inputHint">Støtter generiske P-, B-, C- og U-koder. Merke-spesifikke koder kan variere.</p>
         <div class="decode-result hidden" id="decodeResult" aria-live="polite"></div>
       </section>
 
-      <section class="workshop-finder hidden menu-panel" id="workshopPanel" aria-labelledby="workshopTitle">
-        <div class="section-heading"><div><p class="eyebrow">VERKSTED</p><h2 id="workshopTitle">Finn verksted</h2></div><button class="locate-button" id="locateWorkshops" type="button">⌖ Finn nær meg</button></div>
-        <div class="workshop-filters" id="workshopFilters" hidden><button class="workshop-filter active" data-workshop-filter="all">Alle</button><button class="workshop-filter" data-workshop-filter="dealer">Forhandler</button><button class="workshop-filter" data-workshop-filter="independent">Selvstendig</button></div>
-        <p class="workshop-status" id="workshopStatus">Bruk posisjonen din for å se verksteder i nærheten.</p>
-        <iframe class="workshop-map" id="workshopMap" title="Kart over nærliggende verksteder" loading="lazy"></iframe>
+      <section class="workshop-finder home-widget" id="workshopPanel" data-widget="map" aria-labelledby="workshopTitle">
+        <div class="section-heading"><div><p class="eyebrow" data-i18n="workshop">VERKSTED</p><h2 id="workshopTitle" data-i18n="workshopTitle">Finn verksted</h2></div><button class="locate-button" id="locateWorkshops" type="button" data-i18n="locateMe">⌖ Finn nær meg</button></div>
+        <div class="workshop-filters" id="workshopFilters" hidden><button class="workshop-filter active" data-workshop-filter="all" data-i18n="all">Alle</button><button class="workshop-filter" data-workshop-filter="dealer" data-i18n="dealer">Forhandler</button><button class="workshop-filter" data-workshop-filter="independent" data-i18n="independent">Selvstendig</button></div>
+        <p class="workshop-status" id="workshopStatus" data-i18n="workshopInitial">Bruk posisjonen din for å se verksteder i nærheten.</p>
+        <iframe class="workshop-map" id="workshopMap" data-i18n-title="workshopTitle" title="Kart over nærliggende verksteder" loading="lazy"></iframe>
         <div class="workshop-results" id="workshopResults"></div>
-        <p class="map-attribution">Kartdata © OpenStreetMap-bidragsytere</p>
+        <p class="map-attribution" data-i18n="mapAttribution">Kartdata © OpenStreetMap-bidragsytere</p>
       </section>
 
-      <section class="log-section">
+      <section class="log-section home-widget" data-widget="logbook">
         <div class="section-heading">
           <div><p class="eyebrow" data-i18n="history">HISTORIKK</p><h2 data-i18n="logbook">Bilens loggbok</h2></div>
           <button class="filter-button" id="filterButton" data-i18n="filter">Filter</button>
@@ -71,51 +74,110 @@
           <p data-i18n="noMatchesHint">Prøv et annet filter, eller legg til en ny registrering.</p>
         </div>
       </section>
+      </div>
+
+      <section class="fleet-panel hidden" id="fleetPanel" aria-label="Mine biler">
+        <div class="section-heading"><div><button class="back-button" id="fleetBack" type="button" data-i18n-aria="backHome" aria-label="Tilbake til hjem">‹</button><h2 data-fleet-i18n="myVehicles">Mine biler</h2></div><button class="fleet-add" id="addVehicleButton" type="button">＋ <span data-fleet-i18n="addVehicle">Legg til bil</span></button></div>
+        <button class="remove-vehicle" id="removeVehicleButton" type="button" data-i18n="deleteVehicle">Slett aktiv bil</button>
+        <div class="fleet-summary"><article><strong id="fleetVehicleCount">0</strong><span data-fleet-i18n="vehicles">biler</span></article><article><strong id="fleetEntryCount">0</strong><span data-i18n="entries">registreringer</span></article><article><strong id="fleetCost">0 kr</strong><span data-fleet-i18n="totalCost">totale kostnader</span></article></div>
+        <div class="fleet-list" id="fleetList"></div>
+      </section>
     </main>
 
     <button class="add-button" id="addButton"><span>＋</span> <span data-i18n="add">Legg til</span></button>
 
     <dialog id="entryDialog">
       <form method="dialog" id="entryForm">
-        <div class="dialog-heading"><div><p class="eyebrow">NY REGISTRERING</p><h2>Hva gjorde du?</h2></div><button value="cancel" class="close" aria-label="Lukk">×</button></div>
-        <label>Type
+        <div class="dialog-heading"><div><p class="eyebrow" data-i18n="newEntry">NY REGISTRERING</p><h2 data-i18n="whatDid">Hva gjorde du?</h2></div><button type="button" class="close" data-i18n-aria="close" aria-label="Lukk">×</button></div>
+        <label><span data-i18n="type">Type</span>
           <select name="type" required>
-            <option value="service">Service</option><option value="repair">Reparasjon</option><option value="tire">Dekk</option><option value="other">Annet</option>
+            <option value="service" data-i18n="service">Service</option><option value="repair" data-i18n="repair">Reparasjon</option><option value="tire" data-i18n="tire">Dekk</option><option value="other" data-i18n="other">Annet</option>
           </select>
         </label>
-        <label>Hva ble gjort?<input name="title" placeholder="F.eks. Olje og oljefilter" required maxlength="80" /></label>
-        <div class="form-grid"><label>Dato<input type="date" name="date" required /></label><label>Kilometerstand<input type="number" name="mileage" placeholder="82 500" min="0" /></label></div>
-        <label>Hvor?<input name="place" placeholder="F.eks. Møller Bil" maxlength="80" /></label>
-        <label>Kostnad (kr)<input type="number" name="cost" placeholder="0" min="0" /></label>
-        <label>Notat <span class="optional">valgfritt</span><textarea name="note" placeholder="Deler, garanti eller noe du vil huske"></textarea></label>
-        <button class="save-button" value="default">Lagre registrering</button>
+        <label><span data-i18n="entryTitle">Hva ble gjort?</span><input name="title" data-i18n-placeholder="titlePlaceholder" placeholder="F.eks. Olje og oljefilter" required maxlength="80" /></label>
+        <div class="form-grid"><label><span data-i18n="date">Dato</span><input type="date" name="date" required /></label><label><span data-i18n="mileage">Kilometerstand</span><input type="number" name="mileage" data-i18n-placeholder="mileagePlaceholder" placeholder="82 500" min="0" /></label></div>
+        <label><span data-i18n="place">Hvor?</span><input name="place" data-i18n-placeholder="placePlaceholder" placeholder="F.eks. Møller Bil" maxlength="80" /></label>
+        <label><span data-i18n="cost">Kostnad (kr)</span><input type="number" name="cost" placeholder="0" min="0" /></label>
+        <label><span data-i18n="note">Notat</span> <span class="optional" data-i18n="optional">valgfritt</span><textarea name="note" data-i18n-placeholder="notePlaceholder" placeholder="Deler, garanti eller noe du vil huske"></textarea></label>
+        <label><span data-i18n="attachments">Vedlegg</span> <span class="optional" data-i18n="optional">valgfritt</span><input name="attachments" type="file" accept="image/*,application/pdf" multiple /></label>
+        <p class="input-hint" data-i18n="attachmentHint">Bilder og PDF-kvitteringer lagres på denne enheten.</p>
+        <button class="save-button" value="default" data-i18n="saveEntry">Lagre registrering</button>
       </form>
     </dialog>
 
     <dialog id="vehicleDialog">
       <form method="dialog" id="vehicleForm">
-        <div class="dialog-heading"><div><p class="eyebrow">BIL</p><h2>Endre bil</h2></div><button value="cancel" class="close" aria-label="Lukk">×</button></div>
-        <label>Bilmodell<input name="name" required /></label>
-        <label>År og registreringsnummer<input name="meta" required /></label>
-        <button class="save-button" value="default">Lagre bil</button>
+        <div class="dialog-heading"><div><p class="eyebrow" data-i18n="vehicle">BIL</p><h2 data-i18n="editVehicle">Endre bil</h2></div><button type="button" class="close" data-i18n-aria="close" aria-label="Lukk">×</button></div>
+        <label><span data-i18n="vehicleModel">Bilmodell</span><input name="name" required /></label>
+        <label><span data-i18n="yearRegistration">År og registreringsnummer</span><input name="meta" required /></label>
+        <button class="save-button" value="default" data-i18n="saveVehicle">Lagre bil</button>
       </form>
     </dialog>
     <dialog id="addVehicleDialog">
       <form method="dialog" id="addVehicleForm">
-        <div class="dialog-heading"><div><p class="eyebrow">NY BIL</p><h2>Legg til i bilparken</h2></div><button value="cancel" class="close" aria-label="Lukk">×</button></div>
-        <label>Bilmodell<input name="name" placeholder="F.eks. Volkswagen ID.4" required maxlength="80" /></label>
-        <label>År og registreringsnummer<input name="meta" placeholder="F.eks. 2024 · EV 12345" required maxlength="80" /></label>
-        <button class="save-button" value="default">Legg til bil</button>
+        <div class="dialog-heading"><div><p class="eyebrow" data-i18n="newVehicle">NY BIL</p><h2 data-i18n="addToVehicles">Legg til i mine biler</h2></div><button type="button" class="close" data-i18n-aria="close" aria-label="Lukk">×</button></div>
+        <label><span data-i18n="vehicleModel">Bilmodell</span><input name="name" data-i18n-placeholder="vehiclePlaceholder" placeholder="F.eks. Volkswagen ID.4" required maxlength="80" /></label>
+        <label><span data-i18n="yearRegistration">År og registreringsnummer</span><input name="meta" data-i18n-placeholder="metaPlaceholder" placeholder="F.eks. 2024 · EV 12345" required maxlength="80" /></label>
+        <button class="save-button" value="default">＋ <span data-fleet-i18n="addVehicle">Legg til bil</span></button>
       </form>
+    </dialog>
+    <dialog id="reminderDialog">
+      <form method="dialog" id="reminderForm">
+        <div class="dialog-heading"><div><p class="eyebrow" data-i18n="maintenance">VEDLIKEHOLD</p><h2 data-i18n="reminders">Påminnelser</h2></div><button type="button" class="close" data-i18n-aria="close" aria-label="Lukk">×</button></div>
+        <p class="dialog-help" data-i18n="reminderHelp">Service beregnes fra siste registrerte service. Dekkskift følger månedene du velger.</p>
+        <div class="form-grid"><label><span data-i18n="serviceEveryMonths">Service hver (måneder)</span><input type="number" name="serviceMonths" min="1" max="60" required /></label><label><span data-i18n="serviceEveryKm">Service hver (km)</span><input type="number" name="serviceKm" min="0" step="500" required /></label></div>
+        <div class="form-grid"><label><span data-i18n="summerTiresMonth">Sommerdekk (måned)</span><select name="summerTires"><option value="3" data-i18n="march">Mars</option><option value="4" data-i18n="april">April</option><option value="5" data-i18n="may">Mai</option></select></label><label><span data-i18n="winterTiresMonth">Vinterdekk (måned)</span><select name="winterTires"><option value="9" data-i18n="september">September</option><option value="10" data-i18n="october">Oktober</option><option value="11" data-i18n="november">November</option></select></label></div>
+        <button class="save-button" value="default" data-i18n="saveReminders">Lagre påminnelser</button>
+      </form>
+    </dialog>
+    <dialog id="widgetDialog">
+      <form method="dialog" id="widgetForm">
+        <div class="dialog-heading"><div><p class="eyebrow" data-i18n="homeScreen">HJEMSKJERM</p><h2 data-i18n="chooseWidgets">Velg widgets</h2></div><button type="button" class="close" data-i18n-aria="close" aria-label="Lukk">×</button></div>
+        <p class="dialog-help" data-i18n="widgetHelp">Velg det du vil ha på startsiden. Du kan endre dette når som helst.</p>
+        <label class="widget-choice"><span><strong data-i18n="remindersWidget">Påminnelser</strong><small data-i18n="remindersWidgetHint">Service og dekkskift</small></span><input type="checkbox" name="reminders" /></label>
+        <label class="widget-choice"><span><strong data-i18n="logbookWidget">Loggbok</strong><small data-i18n="logbookWidgetHint">Bilens hendelser og kostnader</small></span><input type="checkbox" name="logbook" /></label>
+        <label class="widget-choice"><span><strong data-i18n="obdWidget">OBD-leser</strong><small data-i18n="obdWidgetHint">Forklaring av feilkoder</small></span><input type="checkbox" name="obd" /></label>
+        <label class="widget-choice"><span><strong data-i18n="mapWidget">Kart og verksted</strong><small data-i18n="mapWidgetHint">Finn verksteder i nærheten</small></span><input type="checkbox" name="map" /></label>
+        <button class="save-button" value="default" data-i18n="saveHome">Lagre hjemskjerm</button>
+      </form>
+    </dialog>
+    <dialog id="attachmentDialog">
+      <div class="attachment-dialog-content">
+        <div class="dialog-heading"><div><p class="eyebrow" data-i18n="attachments">VEDLEGG</p><h2 id="attachmentTitle" data-i18n="documents">Dokumenter</h2></div><button type="button" class="close" data-i18n-aria="close" aria-label="Lukk">×</button></div>
+        <button class="add-attachment-button" id="addAttachmentButton" type="button" data-i18n="addAttachment">＋ Legg til vedlegg</button>
+        <input id="attachmentPicker" type="file" accept="image/*,application/pdf" multiple hidden />
+        <div class="attachment-list" id="attachmentList"></div>
+      </div>
+    </dialog>
+    <dialog id="accountDialog">
+      <div class="info-dialog-content">
+        <div class="dialog-heading"><button class="menu-back" type="button" data-i18n-aria="backMenu" aria-label="Tilbake til meny">‹</button><div><p class="eyebrow" data-i18n="account">KONTO</p><h2 data-i18n="loginSync">Logg inn og synk</h2></div><button type="button" class="close" data-i18n-aria="close" aria-label="Lukk">×</button></div>
+        <p data-i18n="accountIntro">En AutoLog-konto lar deg synkronisere biler, hendelser og vedlegg sikkert mellom enhetene dine.</p>
+        <div class="account-status"><strong data-i18n="accountUnavailable">Pålogging er ikke satt opp</strong><span data-i18n="accountUnavailableHint">Denne versjonen bruker foreløpig bare lokal lagring på enheten.</span></div>
+        <button class="save-button" type="button" disabled data-i18n="login">Logg inn</button>
+      </div>
+    </dialog>
+    <dialog id="legalDialog">
+      <div class="info-dialog-content legal-content">
+        <div class="dialog-heading"><button class="menu-back" type="button" data-i18n-aria="backMenu" aria-label="Tilbake til meny">‹</button><div><p class="eyebrow" data-i18n="information">INFORMASJON</p><h2 data-i18n="privacyTerms">Personvern og vilkår</h2></div><button type="button" class="close" data-i18n-aria="close" aria-label="Lukk">×</button></div>
+        <h3 data-i18n="privacy">Personvern</h3>
+        <p data-i18n="privacyTextOne">Bilinformasjon, hendelser, påminnelser og vedlegg lagres lokalt på enheten din. AutoLog oppretter ingen konto og sender ikke disse dataene til en egen server i denne versjonen.</p>
+        <p data-i18n="privacyTextTwo">OBD-oppslag og verkstedsøk bruker eksterne tjenester når du selv ber om det. Tjenestene mottar bare opplysninger som er nødvendige for forespørselen, som feilkode eller posisjon.</p>
+        <h3 data-i18n="terms">Vilkår</h3>
+        <p data-i18n="termsTextOne">AutoLog er et hjelpemiddel for oversikt. Påminnelser og feilkodeforklaringer erstatter ikke verkstedets vurdering, bilprodusentens serviceprogram eller sikkerhetsvarsler.</p>
+        <p data-i18n="termsTextTwo">Du er ansvarlig for å ta backup av lokale data. Ved sletting av nettleserdata eller appdata kan lokalt lagret informasjon gå tapt.</p>
+      </div>
     </dialog>
     <dialog id="appMenu">
       <div class="app-menu-content">
-        <div class="dialog-heading"><div><p class="eyebrow">MENY</p><h2>Verktøy</h2></div><button class="close" id="closeMenu" aria-label="Lukk">×</button></div>
-        <button class="menu-option" data-panel="fleetPanel"><span>🚙</span><span><strong>Bilpark</strong><small>Bytt, legg til eller fjern biler</small></span></button>
-        <button class="menu-option" data-panel="workshopPanel"><span>⌖</span><span><strong>Finn verksted</strong><small>Verksteder i nærheten</small></span></button>
-        <button class="menu-option" data-panel="decoderPanel"><span>⌁</span><span><strong>OBD-II feilkoder</strong><small>Forklar symptomer og mulige løsninger</small></span></button>
+        <div class="dialog-heading"><div><p class="eyebrow" data-i18n="menu">MENY</p><h2 data-i18n="tools">Verktøy</h2></div><button class="close" id="closeMenu" data-i18n-aria="close" aria-label="Lukk">×</button></div>
+        <button class="menu-option" data-panel="fleetPanel"><span>🚙</span><span><strong data-fleet-i18n="myVehicles">Mine biler</strong><small data-i18n="myCarsHint">Bytt, legg til eller fjern biler</small></span></button>
+        <button class="menu-option" data-dialog="accountDialog"><span>◎</span><span><strong data-i18n="login">Logg inn</strong><small data-i18n="loginHint">Synk mellom enhetene dine</small></span></button>
+        <div class="menu-option menu-language"><span>◉</span><span><strong data-i18n="language">Språk</strong><small data-i18n="languageHint">Velg språk for AutoLog</small></span><div class="language-buttons" role="group" aria-label="Velg språk"><button type="button" data-language="nb">NO</button><button type="button" data-language="en">EN</button></div></div>
+        <button class="menu-option" data-dialog="legalDialog"><span>§</span><span><strong data-i18n="privacyTerms">Personvern og vilkår</strong><small data-i18n="privacyTermsHint">Hvordan AutoLog behandler data</small></span></button>
       </div>
     </dialog>
     <script src="app.js"></script>
+    <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
   </body>
 </html>
